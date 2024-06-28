@@ -61,6 +61,28 @@ void setResolution(int width, int height, std::string _iniPath)
     }
 }
 
+// Get resolution
+std::pair<int, int> getResolution(const std::string& _iniPath)
+{
+    CSimpleIniA ini;
+    ini.SetUnicode();
+    SI_Error rc = ini.LoadFile(_iniPath.c_str());
+    if (rc < 0) {
+        std::string errorMsg = "Error loading INI file";
+        std::cerr << errorMsg << std::endl;
+        addErrorMessage(errorMsg);
+        return std::make_pair(-1, -1); // Error indicator
+    }
+
+    const char* resolutionXStr = ini.GetValue("/Script/FortniteGame.FortGameUserSettings", "ResolutionSizeX", "0");
+    const char* resolutionYStr = ini.GetValue("/Script/FortniteGame.FortGameUserSettings", "ResolutionSizeY", "0");
+
+    int resolutionX = std::stoi(resolutionXStr);
+    int resolutionY = std::stoi(resolutionYStr);
+
+    return std::make_pair(resolutionX, resolutionY);
+}
+
 // Set window mode
 void setWindowMode(int mode, std::string _iniPath)
 {
@@ -87,6 +109,24 @@ void setWindowMode(int mode, std::string _iniPath)
     else {
         std::cout << "Window modes successfully amended" << std::endl;
     }
+}
+
+// Get window mode
+int getWindowMode(std::string _iniPath)
+{
+    CSimpleIniA ini;
+    ini.SetUnicode();
+    SI_Error rc = ini.LoadFile(_iniPath.c_str());
+    if (rc < 0) {
+        std::string errorMsg = "Error loading INI file";
+        std::cerr << errorMsg << std::endl;
+        addErrorMessage(errorMsg);
+        return 1; // Error indicator
+    }
+
+    const char* mode = ini.GetValue("/Script/FortniteGame.FortGameUserSettings", "LastConfirmedFullscreenMode", "0");
+
+    return std::stoi(mode);
 }
 
 // Make read-only

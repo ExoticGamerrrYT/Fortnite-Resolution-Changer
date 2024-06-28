@@ -7,7 +7,6 @@
 #include <tchar.h>
 #include <Windows.h>
 
-#include "../resource.h"
 #include "changer.h"
 
 // Data
@@ -35,8 +34,6 @@ int main(int, char**)
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();
     WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
-    wc.hIcon = LoadIcon(wc.hInstance, MAKEINTRESOURCE(IDI_ICON1)); // Load the large icon
-    wc.hIconSm = LoadIcon(wc.hInstance, MAKEINTRESOURCE(IDI_ICON1)); // Load the small icon
     ::RegisterClassExW(&wc);
     HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"Fortnite Resolution Changer", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU, 100, 100, WIDTH, HEIGHT, nullptr, nullptr, wc.hInstance, nullptr);
 
@@ -70,9 +67,21 @@ int main(int, char**)
 
     // Our state
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+    // Get ini file path
+    std::string iniPath = getIniPath();
+
+    // Get resolution
+    auto resolution = getResolution(iniPath);
     static int width = 1920;
     static int height = 1080;
+    width = resolution.first;
+    height = resolution.second;
+
+    // Get window mode
     static int window_mode = 0;
+    window_mode = getWindowMode(iniPath);
+
     static bool read_only = true;
 
     // Alertbox text
